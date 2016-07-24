@@ -51,6 +51,7 @@ class Bot(val api: PokemonGo, val settings: Settings) {
         val profile = UpdateProfile()
         val catch = CatchOneNearbyPokemon()
         val release = ReleasePokemon()
+        val hatchEggs = HatchEggs()
 
         task(keepalive)
         println("Getting initial pokestops...")
@@ -69,10 +70,13 @@ class Bot(val api: PokemonGo, val settings: Settings) {
         fixedRateTimer("BotLoop", false, 0, 5000, action = {
             thread(block = {
                 task(keepalive)
-                task(catch)
-                task(drop)
+                if (!settings.walkOnly) {
+                    task(catch)
+                    task(drop)
+                    task(release)
+                }
                 task(process)
-                task(release)
+                task(hatchEggs)
             })
         })
     }
