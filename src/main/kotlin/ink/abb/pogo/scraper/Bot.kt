@@ -41,7 +41,7 @@ class Bot(val api: PokemonGo, val settings: Settings) {
         println("Pokebank ${ctx.api.inventories.pokebank.pokemons.size}/${ctx.profile.pokemonStorage}")
         //println("Inventory bag ${ctx.api.bag}")
 
-        api.inventories.pokebank.pokemons.map {
+        api.inventories.pokebank.pokemons.sortedByDescending { it.getIvPercentage() }.map {
             val IV = it.getIvPercentage()
             "Have ${it.pokemonId.name} (${it.nickname}) with ${it.cp} CP and IV $IV%"
         }.forEach { println(it) }

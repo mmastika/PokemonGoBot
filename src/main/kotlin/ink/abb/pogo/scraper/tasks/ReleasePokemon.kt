@@ -29,7 +29,6 @@ class ReleasePokemon : Task {
         groupedPokemon.forEach {
             val sorted = it.value.sortedByDescending { it.cp }
             for ((index, pokemon) in sorted.withIndex()) {
-                val iv = pokemon.getIv()
                 val ivPercentage = pokemon.getIvPercentage()
                 // never transfer highest rated Pokemon
                 if (index > 0) {
@@ -53,7 +52,7 @@ class ReleasePokemon : Task {
                         }
                         if (shouldRelease) {
                             ctx.pokemonStats.second.andIncrement
-                            Log.yellow("Going to transfer ${pokemon.pokemonId.name} with CP ${pokemon.cp} and IV $iv%; reason: $reason")
+                            Log.yellow("Going to transfer ${pokemon.pokemonId.name} with CP ${pokemon.cp} and IV $ivPercentage%; reason: $reason")
                             pokemon.transferPokemon()
                         }
                     }
