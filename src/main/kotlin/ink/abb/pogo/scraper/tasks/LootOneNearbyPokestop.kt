@@ -31,7 +31,7 @@ class LootOneNearbyPokestop(val sortedPokestops: List<Pokestop>, val lootTimeout
 
         if (nearbyPokestops.size > 0) {
             val closest = nearbyPokestops.first()
-            Log.normal("Looting nearby pokestop ${closest.id}")
+            //Log.normal("Looting nearby pokestop ${closest.id}")
             ctx.api.setLocation(ctx.lat.get(), ctx.lng.get(), 0.0)
             val result = closest.loot()
 

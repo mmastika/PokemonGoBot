@@ -20,8 +20,11 @@ class Settings(val properties: Properties) {
             Pair(ItemId.ITEM_GREAT_BALL, Pokeball.GREATBALL),
             Pair(ItemId.ITEM_POKE_BALL, Pokeball.POKEBALL))
 
-    val startingLatitude = getPropertyOrDie("Starting Latitude", "latitude", String::toDouble)
-    val startingLongitude = getPropertyOrDie("Starting Longitude", "longitude", String::toDouble)
+    val runInCircles = getPropertyIfSet("Autotransfer", "run_in_circles", false, String::toBoolean)
+    val pitStops = if(!runInCircles) emptyList<Pair<Double, Double>>() else getPropertyIfSet("Run around in circles", "pit_stops", "", String::toString).split(":").map { toCoordinate(it) }
+
+    val startingLatitude = if(runInCircles) pitStops[0].first else getPropertyOrDie("Starting Latitude", "latitude", String::toDouble)
+    val startingLongitude = if(runInCircles) pitStops[0].second else getPropertyOrDie("Starting Longitude", "longitude", String::toDouble)
 
     val username = properties.getProperty("username")
     val password = if (properties.containsKey("password")) properties.getProperty("password") else String(Base64.getDecoder().decode(properties.getProperty("base64_password", "")))
@@ -105,5 +108,10 @@ class Settings(val properties: Properties) {
             println("$settingString is invalid, defaulting to $default: ${e.message}")
             return default
         }
+    }
+
+    private fun toCoordinate(stringCoordinate : String) : Pair<Double, Double> {
+        val splits = stringCoordinate.split(",")
+        return Pair(splits.first().toDouble(), splits.last().toDouble())
     }
 }

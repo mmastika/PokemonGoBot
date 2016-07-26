@@ -29,14 +29,22 @@ class WalkToUnusedPokestop(val sortedPokestops: List<Pokestop>, val lootTimeouts
             return
         }
 
-        val nearestUnused = sortedPokestops.filter {
-            it.canLoot(true)
-        }
+        if(settings.pitStops.isEmpty() || !settings.runInCircles) {
+            val nearestUnused = sortedPokestops.filter {
+                it.canLoot(true)
+            }
 
-        if (nearestUnused.size > 0) {
-            if (settings.shouldDisplayWalkingToNearestUnused)
-                Log.normal("Walking to pokestop \"${nearestUnused.first().details.name}\"")
-            walk(ctx, S2LatLng.fromDegrees(nearestUnused.first().latitude, nearestUnused.first().longitude), settings.speed)
+            if (nearestUnused.size > 0) {
+                if (settings.shouldDisplayWalkingToNearestUnused)
+                    Log.normal("Walking to pokestop \"${nearestUnused.first().details.name}\"")
+                walk(ctx, S2LatLng.fromDegrees(nearestUnused.first().latitude, nearestUnused.first().longitude), settings.speed)
+            }
+        }
+        else {
+            val first = settings.pitStops.filter { Math.abs(it.first.minus(ctx.lat.get())) < 0.00001 && Math.abs(it.second.minus(ctx.lng.get())) < 0.0001 }.firstOrNull()
+            val idx = settings.pitStops.indexOf(first)
+            val nextStop = settings.pitStops[(idx + 1) % settings.pitStops.size]
+            walk(ctx, S2LatLng.fromDegrees(nextStop.first, nextStop.second), settings.speed)
         }
     }
 

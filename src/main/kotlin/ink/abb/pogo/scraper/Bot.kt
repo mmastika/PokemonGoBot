@@ -11,10 +11,13 @@ package ink.abb.pogo.scraper
 import com.google.common.util.concurrent.AtomicDouble
 import com.pokegoapi.api.PokemonGo
 import com.pokegoapi.api.player.PlayerProfile
+import com.pokegoapi.api.pokemon.Pokemon
 import ink.abb.pogo.scraper.tasks.*
 import ink.abb.pogo.scraper.util.pokemon.getIvPercentage
+import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.comparisons.thenByDescending
 import kotlin.concurrent.fixedRateTimer
 import kotlin.concurrent.thread
 
@@ -41,7 +44,11 @@ class Bot(val api: PokemonGo, val settings: Settings) {
         println("Pokebank ${ctx.api.inventories.pokebank.pokemons.size}/${ctx.profile.pokemonStorage}")
         //println("Inventory bag ${ctx.api.bag}")
 
-        api.inventories.pokebank.pokemons.sortedByDescending { it.getIvPercentage() }.map {
+        val comparator = Comparator
+                .comparing(Pokemon::getPokemonId)
+                .thenByDescending(Pokemon::getIvPercentage)
+
+        api.inventories.pokebank.pokemons.sortedWith(comparator).map {
             val IV = it.getIvPercentage()
             "Have ${it.pokemonId.name} (${it.nickname}) with ${it.cp} CP and IV $IV%"
         }.forEach { println(it) }
