@@ -29,25 +29,26 @@ class WalkToUnusedPokestop(val sortedPokestops: List<Pokestop>, val lootTimeouts
             return
         }
 
-        if(settings.pitStops.isEmpty() || !settings.runInCircles) {
+        if (settings.pitStops.isEmpty() || !settings.runInCircles) {
             val nearestUnused = sortedPokestops.filter {
                 it.canLoot(ignoreDistance = true, lootTimeouts = lootTimeouts)
             }
 
-        if (nearestUnused.isNotEmpty()) {
-            // Select random pokestop from the 5 nearest while taking the distance into account
-            val chosenPokestop = selectRandom(nearestUnused.take(settings.randomNextPokestop), ctx)
+            if (nearestUnused.isNotEmpty()) {
+                // Select random pokestop from the 5 nearest while taking the distance into account
+                val chosenPokestop = selectRandom(nearestUnused.take(settings.randomNextPokestop), ctx)
 
-            if (settings.shouldDisplayPokestopName)
-                Log.normal("Walking to pokestop \"${chosenPokestop.details.name}\"")
+                if (settings.shouldDisplayPokestopName)
+                    Log.normal("Walking to pokestop \"${chosenPokestop.details.name}\"")
 
-            walk(bot, ctx, S2LatLng.fromDegrees(chosenPokestop.latitude, chosenPokestop.longitude), settings.speed)
+                walk(bot, ctx, S2LatLng.fromDegrees(chosenPokestop.latitude, chosenPokestop.longitude), settings.speed)
+            }
         }
         else {
             val first = settings.pitStops.filter { Math.abs(it.first.minus(ctx.lat.get())) < 0.00001 && Math.abs(it.second.minus(ctx.lng.get())) < 0.0001 }.firstOrNull()
             val idx = settings.pitStops.indexOf(first)
             val nextStop = settings.pitStops[(idx + 1) % settings.pitStops.size]
-            walk(ctx, S2LatLng.fromDegrees(nextStop.first, nextStop.second), settings.speed)
+            walk(bot, ctx, S2LatLng.fromDegrees(nextStop.first, nextStop.second), settings.speed)
         }
     }
 
@@ -117,3 +118,4 @@ class WalkToUnusedPokestop(val sortedPokestops: List<Pokestop>, val lootTimeouts
         return pokestops.first()
     }
 }
+

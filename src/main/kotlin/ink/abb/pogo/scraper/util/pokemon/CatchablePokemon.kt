@@ -15,6 +15,8 @@ import com.pokegoapi.api.inventory.ItemBag
 import com.pokegoapi.api.inventory.Pokeball
 import com.pokegoapi.api.map.pokemon.CatchResult
 import com.pokegoapi.api.map.pokemon.CatchablePokemon
+import ink.abb.pogo.scraper.Context
+import ink.abb.pogo.scraper.Settings
 import ink.abb.pogo.scraper.util.Log
 
 /**
@@ -28,12 +30,11 @@ fun CatchablePokemon.catch(normalizedHitPosition: Double = 1.0,
 }
 
 // unfortunately necessary because of the shitty `Pokeball` class...
-val itemToPokeball = mapOf(
-        Pair(ItemId.ITEM_POKE_BALL, Pokeball.POKEBALL),
-        Pair(ItemId.ITEM_GREAT_BALL, Pokeball.GREATBALL),
+val itemToPokeball = linkedMapOf(
+        Pair(ItemId.ITEM_MASTER_BALL, Pokeball.MASTERBALL),
         Pair(ItemId.ITEM_ULTRA_BALL, Pokeball.ULTRABALL),
-        Pair(ItemId.ITEM_MASTER_BALL, Pokeball.MASTERBALL)
-)
+        Pair(ItemId.ITEM_GREAT_BALL, Pokeball.GREATBALL),
+        Pair(ItemId.ITEM_POKE_BALL, Pokeball.POKEBALL))
 
 fun CatchablePokemon.catch(captureProbability: CaptureProbability, itemBag: ItemBag, desiredCatchProbability: Double, alwaysCurve: Boolean = false, allowBerries: Boolean = false, amount: Int): CatchResult? {
     var result: CatchResult?

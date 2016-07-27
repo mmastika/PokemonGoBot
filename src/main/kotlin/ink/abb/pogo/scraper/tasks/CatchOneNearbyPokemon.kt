@@ -8,9 +8,11 @@
 
 package ink.abb.pogo.scraper.tasks
 
+import POGOProtos.Inventory.Item.ItemIdOuterClass
+import POGOProtos.Inventory.Item.ItemIdOuterClass.ItemId
 import POGOProtos.Networking.Responses.CatchPokemonResponseOuterClass.CatchPokemonResponse
-import POGOProtos.Networking.Responses.EncounterResponseOuterClass
 import POGOProtos.Networking.Responses.EncounterResponseOuterClass.EncounterResponse.Status
+import com.pokegoapi.api.map.pokemon.CatchablePokemon
 import ink.abb.pogo.scraper.Bot
 import ink.abb.pogo.scraper.Context
 import ink.abb.pogo.scraper.Settings
@@ -94,37 +96,5 @@ class CatchOneNearbyPokemon : Task {
                 }
             }
         }
-    }
-}
-
-    fun getPreferredBall(pokemon: CatchablePokemon, ctx: Context, settings: Settings) : ItemId? {
-        val pokemonName = pokemon.pokemonId.name
-        var preferred = settings.preferredBall;
-
-        if(settings.masterBallPrefOverride.contains(pokemonName))
-            preferred = ItemId.ITEM_MASTER_BALL
-        else if (settings.ultraBallPrefOverride.contains(pokemonName))
-            preferred = ItemId.ITEM_ULTRA_BALL
-        else if (settings.greatBallPrefOverride.contains(pokemonName))
-            preferred = ItemId.ITEM_GREAT_BALL
-
-        return nextBallInOrder(preferred, ctx, settings)
-    }
-
-    fun nextBallInOrder(preferred: ItemId, ctx: Context, settings: Settings) : ItemId? {
-        var ballSize = settings.pokeballItems.keys.size
-        var preferredIdx = settings.pokeballItems.keys.indexOf(preferred)
-        var currentIdx = preferredIdx;
-
-        do {
-            var item = ctx.api.inventories.itemBag.getItem(settings.pokeballItems.keys.elementAt(currentIdx))
-            if (item != null && item.count > 0)
-                return item.itemId;
-
-            //Wrap around if we can't find what we need in the order of priority
-            currentIdx = (++currentIdx % ballSize);
-        } while(currentIdx != preferredIdx)
-
-        return null;
     }
 }

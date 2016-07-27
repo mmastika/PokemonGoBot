@@ -18,12 +18,6 @@ import java.util.*
 
 class Settings(val properties: Properties) {
 
-    val pokeballItems = linkedMapOf(
-            Pair(ItemId.ITEM_MASTER_BALL, Pokeball.MASTERBALL),
-            Pair(ItemId.ITEM_ULTRA_BALL, Pokeball.ULTRABALL),
-            Pair(ItemId.ITEM_GREAT_BALL, Pokeball.GREATBALL),
-            Pair(ItemId.ITEM_POKE_BALL, Pokeball.POKEBALL))
-
     val runInCircles = getPropertyIfSet("Autotransfer", "run_in_circles", false, String::toBoolean)
     val pitStops = if(!runInCircles) emptyList<Pair<Double, Double>>() else getPropertyIfSet("Run around in circles", "pit_stops", "", String::toString).split(":").map { toCoordinate(it) }
 
@@ -67,12 +61,12 @@ class Settings(val properties: Properties) {
         )
     }
 
+    val preferredBall = getPropertyIfSet("Preferred Ball", "preferred_ball", ItemId.ITEM_POKE_BALL, ItemId::valueOf)
     val randomNextPokestop = getPropertyIfSet("Number of pokestops to select next", "random_next_pokestop_selection", 5, String::toInt)
 
     val desiredCatchProbability = getPropertyIfSet("Desired chance to catch a Pokemon with 1 ball", "desired_catch_probability", 0.4, String::toDouble)
     val desiredCatchProbabilityUnwanted = getPropertyIfSet("Desired probability to catch unwanted Pokemon (obligatory_transfer; low IV; low CP)", "desired_catch_probability_unwanted", 0.0, String::toDouble)
     val shouldAutoTransfer = getPropertyIfSet("Autotransfer", "autotransfer", false, String::toBoolean)
-    val shouldDisplayKeepAlive = getPropertyIfSet("Display Keepalive Coordinates", "display_keepalive", false, String::toBoolean)
     val keepPokemonAmount = getPropertyIfSet("minimum keep pokemon amount", "keep_pokemon_amount", 1, String::toInt)
     val shouldDisplayKeepalive = getPropertyIfSet("Display Keepalive Coordinates", "display_keepalive", true, String::toBoolean)
 
