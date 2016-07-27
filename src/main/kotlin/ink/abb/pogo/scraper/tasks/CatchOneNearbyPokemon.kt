@@ -36,7 +36,7 @@ class CatchOneNearbyPokemon : Task {
                     val wildPokemonIv = getWildPokemonIV(encounterResult.wildPokemon)
 
                     Log.green("Encountered pokemon ${catchablePokemon.pokemonId} with CP ${wildPokemonCp} and IV ${wildPokemonIv}")
-                    val result = catchablePokemon.catchPokemon(usedPokeball, 0)
+                    val result = catchablePokemon.catchPokemon(usedPokeball, -1, 0)
 
                     if (result.status == CatchPokemonResponse.CatchStatus.CATCH_SUCCESS) {
                         ctx.pokemonStats.first.andIncrement
